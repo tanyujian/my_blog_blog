@@ -1,0 +1,75 @@
+{% extends 'base.html'%}
+
+{% block content%}
+
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-4 col-md-offset-4">
+                <div class="panel panel-default">
+              <div class="panel-heading">{{ title }}</div>
+              <div class="panel-body">
+                  <form action="" method="post">
+                      {% csrf_token %}
+                      {%for form in forms %}
+                        {% if not form.is_hidden %}
+                            <label for="{{form.id_for_label}}">{{form.label}}</label>
+                        {%endif%}
+                        <p>{{ form }}</p>
+                      {%endfor%}
+{#                        {{ forms.as_p }}#}
+                       <div id="tip" class="fix">  {{ forms.errors.as_text }}</div>
+                      <input type="submit" class="btn-primary" value="{{ title }}">
+                      <button class="btn-primary pull-right {{ nature }}" id="send_code">{{ send }}</button>
+                  </form>
+              </div>
+            </div>
+              </div>
+              </div>
+            </div>
+        </div>
+
+{% endblock%}
+
+{% block js %}
+    <script type="text/javascript">
+        $("#send_code").click(function () {
+            var email=$("#id_email").val()
+            if(email== "") {
+                $("#tip").text("邮件不能为空");
+                return false
+            }
+
+
+        $.ajax({
+            url:"{% url 'send_email' %}",
+            type:"GET",
+            data:{"email":email},
+            cache:"false",
+            success:function(data){
+                $("#tip").text(data["success"]);
+                alert(data["success"]);
+        }
+
+
+        });
+            $(this).addClass("disabled");
+            $(this).attr("disabled",true);
+            var time=30;
+            $(this).text(time+"s");
+            var interval=setInterval( ()=> {
+
+                if(time<= 0){
+                    clearInterval(interval);//清除变量
+                    $(this).removeClass("disabled");
+                    $(this).attr("disabled",false);
+                    $(this).text("发送验证码");
+                    return true
+                }
+                time--;
+                $(this).text(time+'s');
+            },1000);
+
+            });
+
+    </script>
+{% endblock %}

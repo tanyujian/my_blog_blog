@@ -20,5 +20,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.main,name='main')
+    path('',views.main,name='main'),
+    path("myuser/",include("myuser.urls")),
+    path("captcha",include("captcha.urls"))
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
