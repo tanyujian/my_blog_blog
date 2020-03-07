@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .forms import LoginForm,SignupForm,ChangeNickname,ChangeEmail
 from django.urls import reverse
 # Create your views here.
-
+#登陆
 def log_in (request):
     content = {}
     if request.method=="POST":
@@ -26,7 +26,7 @@ def log_in (request):
 def log_out(request):
     logout(request)
     return redirect('main')
-
+#注册
 def sign_up(request):
     content = {}
     if request.method=="POST":
@@ -47,7 +47,7 @@ def sign_up(request):
     content["nature"]=""
     content["forms"]=form
     return render(request,'user_forms',content)
-
+#发送邮件
 def send_email(request):
     data={}
     email=request.GET.get("email")
@@ -66,10 +66,10 @@ def send_email(request):
     )
     data["success"]="发送成功"
     return JsonResponse(data)
-
+#个人资料
 def personal(request):
     return render(request,"personal.html")
-
+#改变昵称
 def change_nickname(request):
     content={}
     if request.method=="POST":
@@ -88,7 +88,7 @@ def change_nickname(request):
     content["nature"]="hidden"
     content["forms"]=form
     return render(request,'user_forms',content)
-
+#改变邮箱
 def change_email(request):
     content = {}
     if request.method=="POST":

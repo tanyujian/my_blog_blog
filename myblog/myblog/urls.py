@@ -22,5 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.main,name='main'),
     path("myuser/",include("myuser.urls")),
-    path("captcha",include("captcha.urls"))
+    path("blog/",include("blog.urls")),
+    path("comment/",include("blog_statistics.urls")),
+    path("captcha",include("captcha.urls")),
+    path("ckeditor/",include("ckeditor_uploader.urls"))
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

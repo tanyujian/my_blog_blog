@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+             <div class="container">
+            <div class="row">
+              <div class="col-sm-8 col-md-offset-2">
+                <div class="panel panel-default">
+              <div class="panel-heading">{{ title }}</div>
+              <div class="panel-body">
+                  <form action="" method="post"  enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {%for form in forms %}
+                        {% if not form.is_hidden %}
+                            <label for="{{form.id_for_label}}">{{form.label}}</label>
+                        {%endif%}
+                        <p>{{ form }}</p>
+                      {%endfor%}
+{#                        {{ forms.as_p }}#}
+                       <div id="tip" class="fix">  {{ forms.errors.as_text }}</div>
+                      <input type="submit" class="btn-primary" value="{{ title }}">
+                      <button class="btn-primary pull-right {{ nature }}" id="send_code">{{ send }}</button>
+                  </form>
+              </div>
+            </div>
+              </div>
+              </div>
+            </div>
+        </div>
+{% endblock content %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% load my_blog_tags %}
+{% load statistics %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+    <div class="col-xs-8 col-md-offset-1">
+            <div class="panel panel-default">
+          <div class="panel-heading">博客内容 </div>
+          <div class="panel-body">
+              {% for blog in num.object_list %}
+                  <a href=""><a href="{% url 'blog_detail' blog.id %}"><h3>{{blog.title }}</h3></a></a>
+                        <span>{{ blog.blog_date }}</span>
+                      <p> <a href="{% url 'class_type' blog.nature.id%}">分类：{{ blog.nature.blog_type }}</a>&nbsp;阅读数：{% get_read_num blog.id %}&nbsp;评论数:{% get_comment_num blog.id blog %}</p>
+                      <p>{{ blog.content|safe|truncatechars:100 }}</p>
+              {% empty %}
+                  <h3 align="center">暂无博客</h3>
+              {% endfor %}
+                <nav aria-label="Page navigation">
+                  <ul class="pagination">
+                    <li>
+                        {% if num.has_previous %}
+                      <a href="?page={{ num.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+
+                      </a>
+                        {% endif %}
+                    </li>
+                  {% for page in blog_page %}
+                      {% if page == num.number %}
+                             <li class="active"><a  href="?page={{ page }}">{{ page }}</a></li>
+                      {% else %}
+                          <li><a class="" href="?page={{ page }}">{{ page }}</a></li>
+                      {% endif %}
+
+                  {% endfor %}
+                    <li>
+                        {% if num.has_next %}
+                      <a href="?page={{ num.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                        {% endif %}
+                    </li>
+
+                  </ul>
+                </nav>
+
+          </div>
+</div>
+
+    </div>
+        <div class="col-xs-3">
+            <div class="panel panel-default">
+                         <div class="panel-heading">
+            <h3 class="panel-title">日期分类</h3>
+          </div>
+              <div class="panel-body">
+                  {% for dates,count in date.items %}
+                        <li><span> <a href="{% url 'class_date' dates.year dates.month%}">{{ dates }}({{ count }})</a></span></li>
+                  {% endfor %}
+
+
+              </div>
+            </div>
+            </div>
+               <div class="col-xs-3">
+            <div class="panel panel-default">
+                         <div class="panel-heading">
+            <h3 class="panel-title">类别分类</h3>
+          </div>
+              <div class="panel-body">
+                {%for clss in classify %}
+                    <li><span><a href="{% url 'class_type' clss.id%}">{{ clss.blog_type }}({% get_blog_count clss %})</a></span></li>
+                  {% endfor %}
+              </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% load statistics %}
+{% block content %}
+    <div class="container-fluid">
+  <div class="row">
+              <div class="col-xs-8 col-xs-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ blog.title }}</div>
+          <div class="panel-body">
+              <p>分类：{{ blog.nature }}  </p><!--自定义的后端的模板表标签的引用-->
+              <p>作者:{{ blog.user }}  &nbsp;发布时间:{{ blog.blog_date|date:"Y-m-d H:i:s"}}&nbsp;阅读数{% get_read_num blog.id %}&nbsp;评论数:({% get_comment_num blog.id blog %})</p>
+            <span class="content_blog">{{ blog.content|safe }}</span>
+
+            {% if blog_previous.title %}
+                <p><a href="{% url "blog_detail" blog_previous.id %}">上一篇：{{ blog_previous.title }}</a></p>
+            {% else %}
+                <p>上一篇:没有</p>
+            {% endif %}
+                      {% if blog_next.title %}
+                <p><a href="{% url 'blog_detail' blog_next.id %}">下一篇：{{ blog_next.title }}</a></p>
+            {% else %}
+                 <p>下一篇：没有</p>
+            {% endif %}
+              <form action="{% url "comment" %}" method="post" id="commentform">
+                  <div id="reply_content_container" style="display:None;">
+                  回复：
+                  <div id="reply_content"></div>
+              </div>
+                  {% csrf_token %}
+            {% for comment_ in comment_form %}
+                {{ comment_ }}
+            {% endfor %}
+              {{ comment_form.errors }}
+              <div class="text-danger" id="error"> </div>
+                  <input type="submit" value="评论" class="btn-primary pull-right">
+              </form>
+      </div>
+      </div>
+    </div>
+    </div>
+          </div>
+            </div>
+    </div>
+                   <div class="col-xs-8 col-md-offset-1">
+            <div class="panel panel-default">
+          <div class="panel-heading">精选评论</div>
+          <div class="panel-body">
+              {% for comments in comment %}
+                    <div id="parent_{{ comments.id }}">
+                  <div id="parent_comment"><p>{{ comments.user }}&nbsp;{{ comments.comment_time|date:"Y-m-d H:i:s" }}</p>
+                    <div id="content_{{ comments.id }}">{{ comments.comment|safe }}</div> <a href="javascript:reply({{ comments.id }})">回复</a></div>
+                  {% for comment_root in comments.root_comment.all %}
+                      <div class="reply">
+                        <div id="parent_comment"><p>{{ comment_root.user }}回复{{ comment_root.reply_to.username }}&nbsp;{{ comment_root.comment_time|date:"Y-m-d H:i:s" }}</p>
+                    <div id="content_{{ comment_root.id }}">{{ comment_root.comment|safe }}</div> <a href="javascript:reply({{ comment_root.id }})">回复</a></div>
+                      </div>
+                  {% endfor %}
+                  </div>
+                  <hr>
+              {% endfor %}
+          </div>
+            </div>
+           </div>
+        </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $("#commentform").submit(function () {
+            CKEDITOR.instances["id_context"].updateElement();//更新下富文本编辑器
+            //异步提交
+            $.ajax({
+                url:{% url 'comment' %},
+                type:"POST",
+                data:$(this).serialize(),
+                cache:false,
+                success:function (data) {
+                    console.log(data);
+                    if($("#reply_id").val()==0){
+                    var htmls="<P>"+data["user"]+"&nbsp;"+data["time"]+"</p>"+"<div id='content_"+data["id"]+"' >" +data["content"]+"</div>"+
+                    "<a href='javascript:reply("+data["id"]+")'>回复</a>";
+                    $("#parent_comment").prepend(htmls);
+                    }
+                    else{
+                        var htmls="<div class='reply'><P>"+data["user"]+"回复:"+data["reply_to"]+"&nbsp;"+data["time"]+"</p>"+"<div id='content_"+data["id"]+"' >" +data["content"]+"</div>"+
+                    "<a href='javascript:reply("+data["id"]+")'>回复</a></div>";
+                        $("#parent_"+data["root_id"]).append(htmls)
+
+                    }
+                    CKEDITOR.instances['id_context'].setData('');
+                },
+
+                 error:function (xhr) {
+                console.log(xhr);
+
+            }
+            })
+            return false;
+        });
+    function reply(reply_id) {
+        $("#reply_id").val(reply_id);
+        var html=$("#content_"+reply_id).html()
+        $("#reply_content").html(html);//可以将对应的html放到对应得标签中
+        $("#reply_content_container").show();//将对应得标签得html显示出来
+        $('html').animate({scrollTop:$('#commentform').offset().top - 60},300,function () {
+            CKEDITOR.instances['id_context'].focus();
+
+        });
+    }
+    
+    </script>
+
+{% endblock %}

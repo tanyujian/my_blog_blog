@@ -2,7 +2,7 @@ from django import forms
 from captcha.fields import CaptchaField
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model,authenticate
-
+#登陆表单
 class LoginForm(forms.Form):
     username= forms.CharField(label='用户名',
                               widget=forms.TextInput(attrs={'class':"form_control","placeholder":"输入你的用户名"}))
@@ -18,7 +18,7 @@ class LoginForm(forms.Form):
             raise forms.ValidationError("用户名或密码错误")
         return self.cleaned_data
 
-
+#注册表单
 class SignupForm(UserCreationForm):
     v_code=forms.CharField(label='验证码',
                            widget=forms.TextInput(attrs={"class":"form_control","placeholder":"输入验证码"}))
@@ -36,7 +36,7 @@ class SignupForm(UserCreationForm):
         if not(code == v_code and code !=''):
             raise  forms.ValidationError("验证码不正确")
 
-
+#改变昵称表单
 class ChangeNickname(forms.Form):
     nickname=forms.CharField(label="昵称",
                              widget=forms.TextInput(attrs={"class":"form_control","placeholder":"输入你的新昵称"}))
@@ -46,7 +46,7 @@ class ChangeNickname(forms.Form):
         if nickname == '':
             raise  forms.ValidationError("昵称不能为空")
         return self.cleaned_data
-    
+#改变邮箱表单
 class ChangeEmail(forms.Form):
     email=forms.CharField(label='邮箱',
                           widget=forms.TextInput(attrs={"class":"form_control","placeholder":"输入邮箱地址"}))

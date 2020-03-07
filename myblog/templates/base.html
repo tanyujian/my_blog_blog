@@ -8,10 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <link REL="SHORTCUT ICON" HREF="{% static "favicon.ico" %}"/>
-
+      <link rel="stylesheet" href="{% static 'css/blog.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
     <script src="{% static 'bootstrap-3.3.7-dist/js/jquery.min1.12.4.js'%}"></script>
     <script src="{%static 'bootstrap-3.3.7-dist/js/bootstrap.min.js'%}"></script>
+      <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+        <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
     <title>我的世界有你</title>
 
     <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
@@ -39,7 +41,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><a href="">{% block n_bar2 %}{% endblock %}</a></li>
-            <li class="active"><a href="#">{% block n_bar %}博客 {% endblock %}<span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="{% url "blog_main" %}">{% block n_bar %}博客 {% endblock %}<span class="sr-only">(current)</span></a></li>
             <li><a href="#">{% block n_bar1 %}推荐 {% endblock %}</a></li>
           </ul>
           <form class="navbar-form navbar-left">
@@ -54,6 +56,7 @@
               <li><a href="{% url 'signup' %}">注册</a></li>
             {%else%}
               <li><a href="{% url 'personal' %}">个人信息</a></li>
+                <li><a href="{% url 'send_blog' %}"><span class="glyphicon glyphicon-plus"></span></a></li>
                 <li><a href="{% url 'logout' %}">退出</a></li>
             {%endif%}
           </ul>
