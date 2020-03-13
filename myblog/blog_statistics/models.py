@@ -38,3 +38,21 @@ class Comment(models.Model):
         verbose_name_plural="comment"
     def __str__(self):
         return self.comment
+
+class LikeNum(models.Model):
+    like_num=models.IntegerField(default=0)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # 获取与主键的关系
+    object_id = models.PositiveIntegerField()  # 获取关联那个莫模型的id
+    content_object = GenericForeignKey('content_type', 'object_id')  # 相关连形成主键
+    class Meta:
+        verbose_name="点赞"
+
+class LikeRecord(models.Model):
+    user=models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    like_time=models.DateTimeField(auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # 获取与主键的关系
+    object_id = models.PositiveIntegerField()  # 获取关联那个莫模型的id
+    content_object = GenericForeignKey('content_type', 'object_id')  # 相关连形成主键
+
+    class Meta:
+        verbose_name = "点赞记录"

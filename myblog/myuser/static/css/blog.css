@@ -6,3 +6,16 @@ span.content_blog{
 div.reply{
     margin-left: 2em;
 }
+
+span.glyphicon.active{
+    corlor:red;
+}
+div.like.active{
+    color: red;
+}
+div.like{
+    color: blue; /*颜色*/
+    cursor: pointer;/*设置内容是否可以点*/
+    dispaly: inline-block;
+    padding: 1em  0.3em;
+}

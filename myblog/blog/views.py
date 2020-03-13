@@ -4,12 +4,14 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import   Q
 from .forms import ChangeBlog
 from .models import BlogType,Blog
 from .until import get_classify
 from blog_statistics.models import BlogRank,BlogReadNum
 from blog_statistics.forms import CommentForm
 from blog_statistics.models import Comment
+
 # Create your views here.
 
 @login_required(login_url="login")
@@ -82,7 +84,19 @@ def blog_detail(request,id):
     #添加cookies来判断阅读数
     response.set_cookie("blog_%s"%id,"true")
     return response
-    
+
+def search(request):
+    code=request.GET.get("search",'').strip()
+    code_=code.split(" ")
+    contain=None
+    for i in code_:
+        if contain is None:
+            contain=Q(title__icontains=i)
+        else:
+            contain=contain|Q(title__contains=i)
+    blog_data=Blog.objects.filter(contain)
+    content=get_classify(request,blog_data)
+    return render(request,"blog_main.html",content)
 
 def add(request):
     user=request.user

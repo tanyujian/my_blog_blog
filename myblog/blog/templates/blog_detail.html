@@ -11,7 +11,10 @@
               <p>分类：{{ blog.nature }}  </p><!--自定义的后端的模板表标签的引用-->
               <p>作者:{{ blog.user }}  &nbsp;发布时间:{{ blog.blog_date|date:"Y-m-d H:i:s"}}&nbsp;阅读数{% get_read_num blog.id %}&nbsp;评论数:({% get_comment_num blog.id blog %})</p>
             <span class="content_blog">{{ blog.content|safe }}</span>
-
+          <div class="like {% get_like_status blog blog.id %}" onclick="like(this,'blog',{{ blog.id }})" id="like">
+            <span class="glyphicon glyphicon-thumbs-up {% get_like_status blog blog.id %}" ></span>
+              <span class="like_num">{% get_like_num blog blog.id %}</span>
+          </div>
             {% if blog_previous.title %}
                 <p><a href="{% url "blog_detail" blog_previous.id %}">上一篇：{{ blog_previous.title }}</a></p>
             {% else %}
@@ -110,7 +113,49 @@
 
         });
     }
-    
+    function like(obj,model,id) {
+        var is_like=obj.getElementsByClassName("active").length==0;
+        $.ajax({
+            url:"{% url 'like' %}",
+            type:"GET",
+            data:{
+                model:model,
+                id:id,
+                is_like:is_like
+
+            },
+            cache:false,
+            success:function (data) {
+                console.log(data);
+                if (data["success"] = "success") {
+                    var html = $(obj.getElementsByClassName("glyphicon"));
+                    if (is_like) {
+                        html.addClass("active");
+                        $("#like").addClass("active")
+                    }
+                    else {
+                        html.removeClass("active");
+                        $("#like").removeClass("active")
+                    }
+                    var html2 = $(obj.getElementsByClassName("like_num"))
+                    html2.text(data["like_num"])
+                }
+                else {
+                    console.log(data)
+
+                }
+
+
+
+    },
+                    error:function(xhr) {
+                    console.log(xhr)
+                }
+            
+        })
+
+    }
+
     </script>
 
 {% endblock %}

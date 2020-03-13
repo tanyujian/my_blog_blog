@@ -30,3 +30,4 @@ def get_classify(request,blog_data):
     content["date"] = dates
     content["blog_page"] = blog_page
     return content
+
